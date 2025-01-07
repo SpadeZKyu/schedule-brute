@@ -134,7 +134,7 @@ void HttpSession::handle_request()
         std::string token =
             nlohmann::json::parse(request_.body())["access_token"];
         Schedule schedule(json::parse(
-            client.get("schedule.acm.aiecnu.cn", "443",
+            client.get("localhost", "8080",
                        "/api/programs" + id))["data"]["data"]);
         auto gen = schedule.solve();
         while (gen.next())
@@ -148,9 +148,9 @@ void HttpSession::handle_request()
             }
             json j;
             j["data"] = oss.str();
-            j["problem_id"] = stoi(id.substr(1));
-            client.post("schedule.acm.aiecnu.cn", "443",
-                        "/api/schemes", j.dump(), token);
+            j["program_id"] = stoi(id.substr(1));
+            client.post("localhost", "8080", "/api/schemas", j.dump(),
+                        token);
         }
     }
     catch (const std::exception& e)
